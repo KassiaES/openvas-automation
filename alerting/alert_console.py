@@ -35,31 +35,25 @@ def send_alert(critical_df):
         print("✅ Nenhuma vulnerabilidade crítica encontrada.")
         return
     
-    # Tentar email primeiro
+    # Mostrar alerta no console sempre
+    print(f"\n🚨 ALERTA: {len(critical_df)} vulnerabilidades críticas!")
+    print("=" * 50)
+    for _, vuln in critical_df.iterrows():
+        print(f"• {vuln['name']} | {vuln['host']} | Severidade: {vuln['severity']}")
+    print("=" * 50)
+    print("🚀 AÇÃO REQUERIDA: Corrija imediatamente!")
+    
+    # Tentar email se configurado
     if EMAIL_WORKING:
         try:
             _send_email(critical_df)
-            print(f"📧 ✅ Alerta enviado por email: {len(critical_df)} vulnerabilidades críticas")
-            return
+            print(f"\n📧 ✅ Alerta enviado por email: {len(critical_df)} vulnerabilidades críticas")
         except Exception as e:
-            print(f"❌ Erro no email: {e}")
+            print(f"\n❌ Erro no email: {e}")
+            print("📺 Alerta exibido acima no console")
     else:
-        # Primeira execução - oferecer configuração
-        if EMAIL_CONFIG is None:
-            print("\n⚠️  Email não configurado.")
-            print("🚨 VULNERABILIDADES CRÍTICAS DETECTADAS!")
-            
-            try:
-                setup = input("\n📧 Configurar email agora? (s/N): ").strip().lower()
-                if setup == 's':
-                    print("\n🔧 Execute: python alerting/setup_email.py")
-                    print("   Depois execute: python main.py novamente")
-                    return
-            except KeyboardInterrupt:
-                pass
-    
-    # Fallback para console
-    _console_alert(critical_df)
+        print("\n📺 📧 Email não configurado - usando apenas console")
+        print("💡 Para receber por email: python alerting/setup_email.py")
 
 
 def _send_email(critical_df):

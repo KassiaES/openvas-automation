@@ -1,4 +1,4 @@
-# Configuração de Email para Alertas
+# Configuração de Email e OpenVAS para Alertas
 
 import os
 from pathlib import Path
@@ -32,7 +32,7 @@ def load_env_file():
 # Carregar .env se existir
 load_env_file()
 
-# Configuração usando variáveis de ambiente
+# Configuração de Email usando variáveis de ambiente
 EMAIL_CONFIG = {
     'smtp_server': os.getenv('SMTP_SERVER', 'smtp.gmail.com'),
     'smtp_port': int(os.getenv('SMTP_PORT', '587')),
@@ -41,10 +41,38 @@ EMAIL_CONFIG = {
     'destination': os.getenv('EMAIL_DESTINATION', os.getenv('EMAIL_ADDRESS', ''))
 }
 
+# Configuração do OpenVAS usando variáveis de ambiente
+OPENVAS_CONFIG = {
+    'host': os.getenv('OPENVAS_HOST', 'localhost'),
+    'port': int(os.getenv('OPENVAS_PORT', '9390')),
+    'username': os.getenv('OPENVAS_USERNAME', 'admin'),
+    'password': os.getenv('OPENVAS_PASSWORD', ''),
+    'target_hosts': os.getenv('TARGET_HOSTS', '192.168.1.0/24'),
+    'scan_config_id': os.getenv('SCAN_CONFIG_ID', 'daba56c8-73ec-11df-a475-002264764cea'),
+    'scanner_id': os.getenv('SCANNER_ID', '08b69003-5fc2-4037-a479-93b440211c73'),
+    'mode': os.getenv('MODE', 'development')  # development ou production
+}
+
 def is_configured():
     """Verifica se o email está configurado"""
     required = ['email', 'password']
     return all(EMAIL_CONFIG.get(key) for key in required)
+
+def has_basic_email():
+    """Verifica se ao menos o email está configurado"""
+    return bool(EMAIL_CONFIG.get('email'))
+
+def is_openvas_configured():
+    """Verifica se o OpenVAS está configurado para modo production"""
+    if OPENVAS_CONFIG['mode'] == 'development':
+        return True  # Em modo development não precisa configurar OpenVAS
+    
+    required = ['host', 'username', 'password']
+    return all(OPENVAS_CONFIG.get(key) for key in required)
+
+def get_mode():
+    """Retorna o modo de operação (development/production)"""
+    return OPENVAS_CONFIG['mode']
 
 # Teste da configuração
 def test_email_config():

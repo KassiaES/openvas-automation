@@ -1,5 +1,5 @@
 """
-Sistema Principal
+Sistema Principal - Híbrido (Simulado + Real)
 Orquestra: Scan → Análise → Relatório → Alerta
 """
 
@@ -7,11 +7,30 @@ from scanner.openvas_scan import load_scan_results
 from processing.vuln_analysis import analyze_vulns, get_stats
 from alerting.alert_console import send_alert, send_summary_alert
 
+# Importar configurações para mostrar modo
+try:
+    from alerting.email_config import get_mode, is_openvas_configured
+except ImportError:
+    get_mode = lambda: 'development'
+    is_openvas_configured = lambda: False
+
 
 def main():
-
-    print("🔒 Sistema de Automação de Vulnerabilidades - Versão Simples")
+    
+    mode = get_mode()
+    print(f"🔒 Sistema de Automação de Vulnerabilidades - Modo {mode.upper()}")
     print("=" * 60)
+    
+    # Mostrar status da configuração
+    if mode == 'production':
+        if is_openvas_configured():
+            print("✅ OpenVAS configurado - Scans reais habilitados")
+        else:
+            print("⚠️ OpenVAS não configurado - Usando dados simulados")
+    else:
+        print("🧪 Modo desenvolvimento - Usando dados simulados")
+    
+    print()
     
     # SCANNER - Carregar vulnerabilidades
     print("1️⃣ Executando scan de vulnerabilidades...")

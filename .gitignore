@@ -1,12 +1,26 @@
 # Arquivos que NÃO devem ir para o GitHub
 
-# 🔒 Dados sensíveis
+# 🔒 Dados sensíveis (CRÍTICO)
 .env
+.env.local
+.env.production
 email_config_backup.py
 
-# 📊 Relatórios gerados 
+# 🛡️ OpenVAS - Dados sensíveis
+openvas_config.xml
+openvas_backup.xml
+*.ovaldi
+scanner_results/
+openvas_logs/
+gmp_sessions/
+
+# 📊 Relatórios gerados (podem conter dados reais)
 reports/
 *.csv
+*.xml
+*.json
+scan_results/
+vulnerability_reports/
 
 # 🐍 Python
 __pycache__/
@@ -15,12 +29,17 @@ __pycache__/
 *.pyd
 .Python
 *.so
+.venv/
+venv/
+env/
+ENV/
 
 # 💻 IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
+.DS_Store
 
 # 📧 Backups de configuração
 *_backup.py
@@ -29,11 +48,23 @@ config_*.py
 # 🧪 Arquivos de teste
 test_*.py
 *_test.py
+temp_*.py
 
 # 📝 Logs
 *.log
 logs/
+debug.log
+error.log
 
 # 🔧 Configurações locais específicas do usuário
 local_config.py
 user_settings.py
+personal_*.py
+
+# 📦 Dependências e builds
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
