@@ -1,0 +1,39 @@
+# Arquivos que NÃO devem ir para o GitHub
+
+# 🔒 Dados sensíveis
+.env
+email_config_backup.py
+
+# 📊 Relatórios gerados 
+reports/
+*.csv
+
+# 🐍 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# 💻 IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 📧 Backups de configuração
+*_backup.py
+config_*.py
+
+# 🧪 Arquivos de teste
+test_*.py
+*_test.py
+
+# 📝 Logs
+*.log
+logs/
+
+# 🔧 Configurações locais específicas do usuário
+local_config.py
+user_settings.py

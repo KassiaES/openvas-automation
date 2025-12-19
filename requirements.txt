@@ -1,0 +1,7 @@
+# Dependências Simples para Iniciantes
+
+# Análise de dados
+pandas>=1.5.0
+
+# Não precisa mais nada! 🎉
+# O resto usa bibliotecas padrão do Python
