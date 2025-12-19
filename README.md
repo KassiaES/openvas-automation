@@ -20,7 +20,7 @@ Sistema híbrido para aprendizado e uso real de automação de vulnerabilidades 
 - Conecta com OpenVAS/GVM real
 - Executa scans reais na rede
 - Requer OpenVAS configurado
-
+⚠️ **IMPORTANTE**: Se o OpenVAS não estiver funcional, o sistema **automaticamente usa dados simulados** para garantir que sempre funcione.
 ## Estrutura do projeto
 
 ```
@@ -134,30 +134,51 @@ MODE=production
 
 ### Instalação
 ```bash
-# Executar OpenVAS
+# 1. Executar OpenVAS (primeiro download pode demorar)
 docker run -d -p 9392:9392 --name openvas securecompliance/gvm
 
-# Verificar progresso
+# 2. Verificar progresso da inicialização
 docker logs openvas -f
 
-# Configurar conexão
+# 3. Configurar conexão (após terminar inicialização)
 python scanner/setup_openvas.py
 ```
 
-**⏰ Primeira inicialização demora 20-30 min** (baixa definições CVE)
+🚨 **ATENÇÃO**: 
+- **Primeira inicialização**: 20-60 minutos (baixa CVE database)
+- **Pode travar**: Se demorar mais de 1 hora, pare e reinicie o container
+- **Fallback automático**: Sistema sempre funciona com dados simulados
 
 ### Verificar se está pronto
 ```bash
 # Testar interface web
 python -c "import requests; print(requests.get('http://localhost:9392').status_code)"
+
+# Verificar logs recentes
+docker logs openvas --tail 10
+
+# Se travou, reiniciar container
+docker stop openvas && docker rm openvas
+docker run -d -p 9392:9392 --name openvas securecompliance/gvm
 ```
+
+### Troubleshooting OpenVAS
+| Problema | Solução |
+|----------|----------|
+| Inicialização lenta | ⏰ Normal, aguarde 20-60 min |
+| Travou em CVE sync | 🔄 Reinicie o container |
+| Porta ocupada | 🛡️ `docker stop openvas` |
+| Não conecta | ✅ Sistema usa dados simulados |
+| Erro SSL/TLS | 🔁 Aguarde sincronização terminar |
 
 ## Dicas
 
 - ✅ **Comece** com `python main.py` (funciona sem configuração)
 - 📧 **Email opcional** - sistema funciona perfeitamente sem
 - 🐳 **OpenVAS opcional** - dados simulados são ótimos para aprender
-- ⏰ **Seja paciente** - OpenVAS demora 20-30 min para inicializar
+- ⏰ **Seja paciente** - OpenVAS demora 20-60 min para inicializar
+- 🛡️ **Sempre funciona** - fallback automático para dados simulados
+- ⚠️ **OpenVAS problemático** - Pode travar na sincronização CVE (reinicie se necessário)
 
 ## Para desenvolvedores
 
